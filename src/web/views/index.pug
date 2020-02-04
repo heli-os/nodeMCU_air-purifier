@@ -1,0 +1,13 @@
+html
+    head
+        include head.pug
+    body
+        p SignIn
+        form(action='/authentication' method='post')
+            input(type='hidden' value='signin' name='key')
+            input(type='submit')
+        p SignUp
+        form(action='/authentication/new' method='post')
+            input(type='hidden' value='signup' name='key')
+            input(type='submit')
+        a(href='/view') view
