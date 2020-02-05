@@ -1,0 +1,163 @@
+body {
+    background: url('/static/images/background.jpg') no-repeat fixed center center;
+    background-size: cover;
+    font-family: Montserrat;
+}
+
+#floater {
+    float: left;
+    height: 50%;
+    margin-bottom: -169.5px;
+}
+
+.logo {
+    clear: both;
+    /*width: 300px;*/
+    font-size: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    margin: 25px auto;
+    text-shadow: 0.1em 0.1em 0.2em black;
+}
+
+.logo a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.logo .highlight {
+    color: #ff656c;
+}
+
+
+.form {
+    width: 320px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    border-top: 5px solid #ff656c;
+    margin: 0 auto;
+}
+
+.form .signin-form {
+    display: block;
+}
+
+.form .signup-form {
+    display: none;
+
+}
+
+.form h1 {
+    text-align: center;
+    color: #000;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.form input {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-family: Montserrat;
+    padding: 0 20px 0 50px;
+    outline: none;
+}
+
+.form input.error {
+    margin-bottom: 0;
+}
+
+.form label.error {
+    display: block;
+    font-size: 14px;
+    margin: 7px 0;
+    color: #ff656c;
+}
+
+.form input[name=username] {
+    background: #fff url('/static/images/ico-user.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=username]:focus {
+    background: #fff url('/static/images/ico-user.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=email] {
+    background: #fff url('/static/images/ico-mail.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=email]:focus {
+    background: #fff url('/static/images/ico-mail.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=password],
+.form input[name=password_repeat] {
+    background: #fff url('/static/images/ico-lock.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=password]:focus,
+.form input[name=password_repeat]:focus {
+    background: #fff url('/static/images/ico-lock.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=device] {
+    background: #fff url('/static/images/ico-device.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input[name=device]:focus {
+    background: #fff url('/static/images/ico-device.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.form input:active, .form input:focus {
+    border: 1px solid #ff656c;
+}
+
+.form button {
+    width: 100%;
+    height: 40px;
+    background: #ff656c;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #e15960;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-family: Montserrat;
+    outline: none;
+    cursor: pointer;
+}
+
+.form button:hover {
+    background: #ff7b81;
+}
+
+.form .message {
+    text-align: center;
+    margin: 15px 0 0;
+    color: #b3b3b3;
+    font-size: 12px;
+}
+
+.form .message a {
+    color: #ff656c;
+    text-decoration: none;
+    font-weight: bold;
+}

@@ -28,15 +28,16 @@ if (app.get('env') === 'development')
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-app.use(express.static('public'));
-app.use(express.urlencoded({extended: false}));
+app.use('/static',express.static(__dirname + '/public'));
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
-app.listen(9600,()=>{
+app.listen(9600, () => {
     console.log('9600 port connected!');
 });
 
 
-app.use('/',indexRouter);
-app.use('/authentication',authenticationRouter);
-app.use('/view',viewRouter);
-app.use('/device',deviceRouter);
+app.use('/', indexRouter);
+app.use('/authentication', authenticationRouter);
+app.use('/view', viewRouter);
+app.use('/device', deviceRouter);

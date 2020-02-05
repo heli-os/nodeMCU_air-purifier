@@ -108,3 +108,5 @@ dist
 .idea/
 
 document/
+
+secure-configure.json

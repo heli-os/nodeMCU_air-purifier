@@ -1,13 +1,38 @@
 html
     head
         include head.pug
+        link(href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css')
+        link(href='/static/style/index.css' rel='stylesheet' type='text/css')
+        script(src='/static/js/vendor/jquery-3.4.1.min.js')
+        script(src='/static/js/vendor/jquery.validate.min.js')
+        script(src='/static/js/index.js')
     body
-        p SignIn
-        form(action='/authentication' method='post')
-            input(type='hidden' value='signin' name='key')
-            input(type='submit')
-        p SignUp
-        form(action='/authentication/new' method='post')
-            input(type='hidden' value='signup' name='key')
-            input(type='submit')
-        a(href='/view') view
+        div(id='floater')
+        div(class='logo')
+            a(href='/')
+                span(class='highlight') J
+                | upiter
+                span(class='highlight') F
+                | low
+        div(class='form')
+
+            form(class='signin-form')
+                h1 SignIn
+                input(type='text' value='' placeholder='username' name='username')
+                input(type='password' value='' placeholder='Password' name='password')
+                button(type='submit') Singin
+                p(class='message')
+                    | Don't have an account?
+                    a(href='#')  SignUp
+
+            form(class='signup-form')
+                h1 SignUp
+                input(type='text' value='' placeholder='username' name='username')
+                input(type='email' value='' placeholder='Email' name='email')
+                input(type='password' value='' placeholder='Password' name='password')
+                input(type='password' value='' placeholder='Password-Repeat' name='password_repeat')
+                input(type='text' value='' placeholder='Device ID' name='device')
+                button(type='submit') Signup
+                p(class='message')
+                    | Already have an account?
+                    a(href='#')  SignIn
