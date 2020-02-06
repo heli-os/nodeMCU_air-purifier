@@ -5,9 +5,9 @@
 const char* ssid     = "Jinssssun";
 const char* password = "cf4c9zukj7irr";
 
-#define PIN 12
+#define PIN 25
 
-#define NUM_LEDS 12
+#define NUM_LEDS 8
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 //int i = 0;
 
@@ -17,7 +17,7 @@ void setup()
 {
   Serial.begin(115200);
   pinMode(2, OUTPUT);
-  pinMode(13, OUTPUT);
+  pinMode(26, OUTPUT);
 
   //  mySerial.begin(9600);
 
@@ -47,13 +47,13 @@ void setup()
 
 void loop() {
   digitalWrite(2, HIGH);
-  digitalWrite(13, HIGH);
+  digitalWrite(26, HIGH);
   colorWipe(strip.Color(255, 0, 0), 50); //빨간색 출력
   colorWipe(strip.Color(0, 255, 0), 50); //녹색 출력
   colorWipe(strip.Color(0, 0, 255), 50); //파란색 출력
   delay(5000);
   digitalWrite(2, LOW);
-  digitalWrite(13, LOW);
+  digitalWrite(26, LOW);
   delay(5000);
 
 

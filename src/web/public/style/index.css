@@ -104,13 +104,13 @@ body {
 }
 
 .form input[name=password],
-.form input[name=password_repeat] {
+.form input[name=password_confirm] {
     background: #fff url('/static/images/ico-lock.png') 20px top no-repeat;
     background-size: 16px 80px;
 }
 
 .form input[name=password]:focus,
-.form input[name=password_repeat]:focus {
+.form input[name=password_confirm]:focus {
     background: #fff url('/static/images/ico-lock.png') 20px bottom no-repeat;
     background-size: 16px 80px;
 }

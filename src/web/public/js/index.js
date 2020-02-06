@@ -23,19 +23,23 @@ $(window).on('load', () => {
                 type: 'post',
                 url: '/authentication',
                 data: queryString,
-                dataType: 'json',
-                error: (xhr, status, error) => {
-                    console.log(error);
-                },
-                success: (json) => {
-                    console.log(json);
+                dataType: 'json'
+            }).done((result, status, xhr) => {
+                switch (result.state) {
+                    case "SUCCESS" :
+                        // alert(result.properties.Message);
+                        location.href = '/view';
+                        break;
+                    case "FAIL" :
+                        alert(result.properties.Message);
+                        break;
                 }
+            }).fail((xhr, status, responseObj) => {
+
+            }).then(r => {
 
             });
             // frm.submit();
-        },
-        success: (e) => {
-            // console.log(e);
         }
     });
 
@@ -44,7 +48,7 @@ $(window).on('load', () => {
             username: {required: true, minlength: 4, maxlength: 16},
             email: {required: true, email: true, minlength: 8, maxlength: 254},
             password: {required: true, minlength: 8, maxlength: 32},
-            password_repeat: {
+            password_confirm: {
                 required: true,
                 minlength: 8,
                 maxlength: 32,
@@ -69,7 +73,7 @@ $(window).on('load', () => {
                 minlength: jQuery.validator.format("Enter your password over {0} length"),
                 maxlength: jQuery.validator.format("Enter your password under {0} length")
             },
-            password_repeat: {
+            password_confirm: {
                 required: "Enter your password",
                 minlength: jQuery.validator.format("Enter your password over {0} length"),
                 maxlength: jQuery.validator.format("Enter your password under {0} length"),
@@ -86,28 +90,23 @@ $(window).on('load', () => {
                 type: 'post',
                 url: '/authentication/new',
                 data: queryString,
-                dataType: 'json',
-                error: (xhr, status, error) => {
-                    console.log(error);
-                },
-                success: (json) => {
-                    switch(json.state) {
-                        case "SUCCESS" :
-                            alert('a');
-                            break;
-                        case "FAIL" :
-                            alert('b');
-                            break;
-                    }
-
-                    console.log(json);
+                dataType: 'json'
+            }).done((result) => {
+                switch (result.state) {
+                    case "SUCCESS" :
+                        alert(result.properties.Message);
+                        location.href = '/view';
+                        break;
+                    case "FAIL" :
+                        alert(result.properties.Message);
+                        break;
                 }
-
+            }).fail((xhr, status, responseObj) => {
+                console.log('fail promise');
+            }).then(r => {
+                // console.log('then promise');
             });
             // frm.submit();
-        },
-        success: (e) => {
-            // console.log(e);
         }
     });
 

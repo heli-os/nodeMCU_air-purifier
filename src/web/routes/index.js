@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-    res.render('index');
+    if (req.user && req.user.username)
+        return res.redirect('/view');
+    else
+        return res.render('index');
     next();
 });
 

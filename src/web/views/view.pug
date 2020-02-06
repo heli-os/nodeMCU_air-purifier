@@ -1,5 +1,14 @@
 html
     head
         include head.pug
+        script(src='/static/vendor/chartjs/Chart.min.js')
+        script(src='/static/js/view.js')
     body
-        p view-page
+        p
+            | hello,
+            = username
+
+        a(href='/authentication/signout') signout
+
+        div(style={width: '75%', margin: '0 auto'})
+            canvas(id='myChart')
