@@ -9,4 +9,12 @@ router.get('/', (req, res) => {
         return res.redirect('/');
 });
 
+// get DeviceID
+router.get('/deviceID',(req,res)=>{
+    if(req.user && req.user.device) {
+        return res.send(req.user.device);
+    } else
+        return res.send(null);
+});
+
 module.exports = router;

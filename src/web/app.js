@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const app = express();
 
@@ -34,7 +36,6 @@ const passportConfig = require('./middleware/passport');
 -------------------------------------------------
  */
 
-
 // Global
 if (app.get('env') === 'development')
     app.locals.pretty = true;
@@ -61,7 +62,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 60 * 60 * 24
+        maxAge: 1000 * 60 * 60 * 24
     }
 }));
 

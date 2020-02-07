@@ -22,7 +22,24 @@ router.get('/', (req, res) => {
 
 // DataUpload
 router.post('/data/upload', (req, res) => {
-    res.send('/data/upload');
+    const device = req.body.device;
+    const pm1_0 = req.body.pm1_0;
+    const pm2_5 = req.body.pm2_5;
+    const pm10_0 = req.body.pm10_0;
+    // console.log(req.body);
+    // console.log(req.headers);
+
+    const params = [device, pm1_0, pm2_5, pm10_0];
+    mysqlClient.query("INSERT INTO device_data (device,value_pm1_0,value_pm2_5,value_pm10_0) VALUES(?,?,?,?)", params, (err, rows, fields) => {
+        // console.log(data);
+        if (err) {
+            // console.log(err);
+            return res.status(500).json(responseJSON.create('FAIL', '에러 발생', 'device data download 쿼리 실행 중 오류가 발생하였습니다.'));
+        } else {
+            return res.status(200).json(responseJSON.create('SUCCESS', '데이터 업로드 성공', '데이터를 정상적으로 업로드하였습니다.'));
+        }
+    });
+
 });
 
 // DataDownload
@@ -33,16 +50,16 @@ router.post('/data/upload', (req, res) => {
  */
 router.post('/data/download', (req, res) => {
     const device = req.body.device;
-    mysqlClient.query("SELECT * FROM device_data WHERE device=? ORDER BY time DESC LIMIT 12", device, (err, data) => {
+    mysqlClient.query("SELECT * FROM device_data WHERE device=? ORDER BY time DESC LIMIT 12", device, (err, rows, fields) => {
         // console.log(data);
         if (err) {
             // console.log(err);
             return res.status(500).json(responseJSON.create('FAIL', '에러 발생', 'device data download 쿼리 실행 중 오류가 발생하였습니다.'));
         }
-        if (data.length !== 0) {
+        if (rows.length !== 0) {
             return res.status(200).json({
                 state: 'SUCCESS',
-                data: data
+                data: rows
             });
         } else
             return res.status(200).json(responseJSON.create('FAIL', '데이터 없음', '일치하는 device data가 존재하지 않습니다.'));
