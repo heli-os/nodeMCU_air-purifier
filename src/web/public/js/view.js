@@ -12,124 +12,158 @@ let ctx;
 let myChart;
 let chartOptions;
 
-const readDeviceData = (callback) => {
+const getDeviceID = () => {
+    let deviceID = null;
     $.ajax({
         type: 'get',
-        url: '/view/deviceID'
+        url: '/view/deviceID',
+        async: false
     }).done((result) => {
-        console.log(result);
-        if (!result) {
-            console.log('exit');
-            return;
-        }
-        const deviceID = result;
-        $.ajax({
-            type: 'post',
-            url: '/device/data/download',
-            data: {device: deviceID},
-            dataType: 'json'
-        }).done((result) => {
-            const record = result.data;
-            const name = record.map((rec) => {
-                const cDate = new Date(rec.time);
-                const cTime =
-                    leadingZeros(cDate.getHours(), 2) + ':' +
-                    leadingZeros(cDate.getMinutes(), 2) + ':' +
-                    leadingZeros(cDate.getSeconds(), 2);
-                return cTime;
-            }).reverse();
-            const value_pm1_0 = record.map((rec) => {
-                return rec.value_pm1_0;
-            }).reverse();
-            const value_pm2_5 = record.map((rec) => {
-                return rec.value_pm2_5;
-            }).reverse();
-            const value_pm10_0 = record.map((rec) => {
-                return rec.value_pm10_0;
-            }).reverse();
+        deviceID = result;
+    });
+    return deviceID;
+};
 
-            chartOptions = {
-                type: 'line',
-                data: {
-                    labels: name,
-                    datasets: [
-                        {
-                            label: 'PM 1.0',
-                            borderColor: 'rgb(255, 101, 108)',
-                            backgroundColor: 'rgb(255, 101, 108)',
-                            fill: false,
-                            data: value_pm1_0
-                        },
-                        {
-                            label: 'PM 2.5',
-                            borderColor: 'rgb(54, 162, 235)',
-                            backgroundColor: 'rgb(54, 162, 235)',
-                            fill: false,
-                            borderDash: [5, 5],
-                            data: value_pm2_5
-                        },
-                        {
-                            label: 'PM 10.0',
-                            borderColor: 'rgb(0,235,68)',
-                            backgroundColor: 'rgb(0,235,68)',
-                            fill: false,
-                            data: value_pm10_0
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    animation: false,
-                    title: {
-                        display: true,
-                        text: 'AirCleaner - JupiterFlow'
+const readDeviceSetting = () => {
+    const deviceID = getDeviceID();
+    if (!deviceID) {
+        console.log('exit');
+        return;
+    }
+    let delayObj = {
+        delayUpload: 0,
+        delayDownload: 0
+    };
+    $.ajax({
+        type: 'post',
+        url: '/device/setting/download',
+        data: {device: deviceID},
+        dataType: 'json',
+        async: false
+    }).done((result) => {
+        const record = result.data;
+        delayObj.delayUpload = record.delayUpload;
+        delayObj.delayDownload = record.delayDownload;
+    });
+    return delayObj;
+};
+
+const readDeviceData = (callback) => {
+    const deviceID = getDeviceID();
+    if (!deviceID) {
+        console.log('exit');
+        return;
+    }
+    $.ajax({
+        type: 'post',
+        url: '/device/data/download',
+        data: {device: deviceID},
+        dataType: 'json'
+    }).done((result) => {
+        const record = result.data;
+        const name = record.map((rec) => {
+            const cDate = new Date(rec.time);
+            const cTime =
+                leadingZeros(cDate.getHours(), 2) + ':' +
+                leadingZeros(cDate.getMinutes(), 2) + ':' +
+                leadingZeros(cDate.getSeconds(), 2);
+            return cTime;
+        }).reverse();
+        const pm1_0_value = record.map((rec) => {
+            return rec.pm1_0_value;
+        }).reverse();
+        const pm2_5_value = record.map((rec) => {
+            return rec.pm2_5_value;
+        }).reverse();
+        const pm10_0_value = record.map((rec) => {
+            return rec.pm10_0_value;
+        }).reverse();
+
+        chartOptions = {
+            type: 'line',
+            data: {
+                labels: name,
+                datasets: [
+                    {
+                        label: '미세먼지',
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgb(54, 162, 235)',
+                        fill: false,
+                        // borderDash: [5, 5],
+                        data: pm10_0_value
                     },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false
+                    {
+                        label: '초미세먼지',
+                        borderColor: 'rgb(255, 101, 108)',
+                        backgroundColor: 'rgb(255, 101, 108)',
+                        fill: false,
+                        data: pm2_5_value
                     },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Time'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Value'
-                            },
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
+                    {
+                        label: '극미세먼지',
+                        borderColor: 'rgb(0,255,145)',
+                        backgroundColor: 'rgb(0,255,145)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        data: pm1_0_value
                     }
+                ]
+            },
+            options: {
+                responsive: true,
+                animation: false,
+                title: {
+                    display: true,
+                    text: 'AirCleaner - JupiterFlow'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value'
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
                 }
-            };
-            if(callback)
-                callback();
-            myChart = new Chart(ctx, chartOptions);
-
-        });
-    }).fail((xhr, status, responseObj) => {
-        console.log('fail promise');
-    }).then(r => {
-        // console.log('then promise');
+            }
+        };
+        if (callback)
+            callback();
+        myChart = new Chart(ctx, chartOptions);
     });
 };
 
+let cDownloadInterval = 5000;
+const airCleanerTimer = () => {
+    const deviceSetting = readDeviceSetting();
+    if(deviceSetting.delayDownload !== cDownloadInterval)
+        cDownloadInterval = deviceSetting.delayDownload;
+
+    setTimeout(airCleanerTimer, cDownloadInterval);
+    readDeviceData(() => {
+        myChart.reset();
+    });
+};
 $(window).on('load', () => {
     ctx = $('#myChart');
     readDeviceData();
-    setInterval(() => {
-        readDeviceData(()=>{myChart.reset();});
-    }, 5000);
-
+    setTimeout(airCleanerTimer, cDownloadInterval);
 });

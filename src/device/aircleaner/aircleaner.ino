@@ -12,6 +12,15 @@ const char* password = "cf4c9zukj7irr";
 #define PIN 25
 #define NUM_LEDS 8
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
+const uint32_t colorStep_0 = strip.Color(28, 117, 211); // 최고 좋음
+const uint32_t colorStep_1 = strip.Color(1, 156, 228);  // 좋음
+const uint32_t colorStep_2 = strip.Color(0, 173, 196);  // 양호
+const uint32_t colorStep_3 = strip.Color(59, 140, 62);  // 보통
+const uint32_t colorStep_4 = strip.Color(251, 140, 0);  // 나쁨
+const uint32_t colorStep_5 = strip.Color(230, 74, 25);  // 상당히 나쁨
+const uint32_t colorStep_6 = strip.Color(213, 47, 47);  // 매우 나쁨
+const uint32_t colorStep_7 = strip.Color(33, 33, 33);   // 최악
+
 
 #define DEBUG_OUT Serial
 
@@ -28,9 +37,13 @@ PMS pms(mySerial);
 static const uint32_t PMS_READ_DELAY = 30000; // 센서 부팅후 대기시간 (30 sec)
 static uint32_t PMS_READ_GAP = 5000; // 측정간격 (5 sec)
 
-unsigned int value_pm1_0;
-unsigned int value_pm2_5;
-unsigned int value_pm10_0;
+short pm10_0_value = 0;
+short pm10_0_step = 0;
+short pm2_5_value = 0;
+short pm2_5_step = 0;
+short pm1_0_value = 0;
+short pm1_0_step = 0;
+
 
 // 전역변수 선언
 bool PMS_POWER = false; // PMS7003센서의 동작상태
@@ -74,36 +87,35 @@ void setup()
   DEBUG_OUT.println("IP address: ");
   DEBUG_OUT.println(WiFi.localIP());
 
-  //  strip.begin();
-  //  strip.show();
+  strip.begin();
 
   // 패시브모드로 변경 후 센서 대기상태로 설정
-    pms.passiveMode();
-    pms.sleep();
+  pms.passiveMode();
+  pms.sleep();
 }
 
 void loop() {
-    // 센서동작여부를 판단에 사용할 타이머 변수
-    static uint32_t timerLast = 0; // 센서부팅시작시간 (값이 유지되도록 정적변수 사용)
-    static uint32_t timerBefore = 0; // 직전측정시간
-  
-    // 측정요청이 있으면 센서를 깨우고 깨운 시간을 기억
-    if (!PMS_POWER) {
-      DEBUG_OUT.println("Waking up.");
-      pms.wakeUp();
-      timerLast = millis();
-      PMS_POWER = true;
+  // 센서동작여부를 판단에 사용할 타이머 변수
+  static uint32_t timerLast = 0; // 센서부팅시작시간 (값이 유지되도록 정적변수 사용)
+  static uint32_t timerBefore = 0; // 직전측정시간
+
+  // 측정요청이 있으면 센서를 깨우고 깨운 시간을 기억
+  if (!PMS_POWER) {
+    DEBUG_OUT.println("Waking up.");
+    pms.wakeUp();
+    timerLast = millis();
+    PMS_POWER = true;
+  }
+  // 센서가 깨어나고나서 최소대기상태를 지났을 때만 측정간격을 두고 측정 실시
+  uint32_t timerNow = millis();
+  if (timerNow - timerLast >= PMS_READ_DELAY) {
+    if (timerNow - timerBefore >= PMS_READ_GAP) {
+      timerBefore = timerNow;
+      readData();
+      renderData();
+      uploadData();
     }
-    // 센서가 깨어나고나서 최소대기상태를 지났을 때만 측정간격을 두고 측정 실시
-    uint32_t timerNow = millis();
-    if (timerNow - timerLast >= PMS_READ_DELAY) {
-      if (timerNow - timerBefore >= PMS_READ_GAP) {
-        timerBefore = timerNow;
-        readData();
-        renderData();
-        uploadData();
-      }
-    }
+  }
 
 }
 
@@ -125,26 +137,27 @@ void readData() {
   DEBUG_OUT.println("Reading data...");
   if (pms.readUntil(data)) {
     digitalWrite(2, HIGH);
-    delay(2000);
+    delay(500);
     digitalWrite(2, LOW);
-    delay(2000);
-    value_pm1_0 = data.PM_AE_UG_1_0;
-    value_pm2_5 = data.PM_AE_UG_2_5;
-    value_pm10_0 = data.PM_AE_UG_10_0;
+    delay(500);
+    pm1_0_value = data.PM_AE_UG_1_0;
+    pm2_5_value = data.PM_AE_UG_2_5;
+    pm10_0_value = data.PM_AE_UG_10_0;
   } else {
     DEBUG_OUT.println("No data.");
   }
 }
 void renderData() {
   DEBUG_OUT.println();
+
   DEBUG_OUT.print("PM 1.0 (ug/m3): ");
-  DEBUG_OUT.println(value_pm1_0);
+  DEBUG_OUT.println(pm1_0_value);
 
   DEBUG_OUT.print("PM 2.5 (ug/m3): ");
-  DEBUG_OUT.println(value_pm2_5);
+  DEBUG_OUT.println(pm2_5_value);
 
   DEBUG_OUT.print("PM 10.0 (ug/m3): ");
-  DEBUG_OUT.println(value_pm10_0);
+  DEBUG_OUT.println(pm10_0_value);
 
   DEBUG_OUT.println();
 }
@@ -153,36 +166,32 @@ void renderData() {
 void uploadData() {
 
   if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
-    char bodyData[100] = {0,};
-    sprintf(bodyData, "device=%s&pm1_0=%d&pm2_5=%d&pm10_0=%d", deviceID, value_pm1_0, value_pm2_5, value_pm10_0);
-    //sprintf(bodyData, "{\"device\":\"%s\",\"pm1_0\":\"%d\",\"pm2_5\":\"%d\",\"pm10_0\":\"%d\"}", deviceID, value_pm1_0, value_pm2_5, value_pm10_0);
+    String contentType = "application/x-www-form-urlencoded";
+    char bodyData[150] = {0,};
+    sprintf(bodyData, "device=%s&pm1_0_value=%d&pm1_0_step=%d&pm2_5_value=%d&pm2_5_step=%d&pm10_0_value=%d&pm10_0_step=%d", deviceID, pm1_0_value, pm1_0_step, pm2_5_value, pm2_5_step, pm10_0_value, pm10_0_step);
 
-    DEBUG_OUT.printf("bodyData:%s\r\n",bodyData);
-    client.post("/device/data/upload","application/x-www-form-urlencoded",bodyData);
+    DEBUG_OUT.printf("bodyData:%s\r\n%d\r\n", bodyData, strlen(bodyData));
+    client.post("/device/data/upload", contentType, bodyData);
     DEBUG_OUT.println("post success");
 
     // read the status code and body of the response
     int statusCode = client.responseStatusCode();
     DEBUG_OUT.println(statusCode);
-    String response = client.responseBody();
+    String responseBody = client.responseBody();
+    DEBUG_OUT.println(responseBody);
 
-    DEBUG_OUT.print("Status code: ");
-    DEBUG_OUT.println(statusCode);
-    DEBUG_OUT.print("Response: ");
-    DEBUG_OUT.println(response);
-
-
-//    DEBUG_OUT.println("Wait five seconds");
-//    delay(5000);
+    if (statusCode != 200) {
+      delay(5000);
+      uploadData();
+    }
   } else {
     DEBUG_OUT.println("Error in WiFi connection");
   }
 }
-//NeoPixel에 달린 LED를 각각 주어진 인자값 색으로 채워나가는 함수
-void colorWipe(uint32_t c, uint8_t wait) {
+
+void setColor(uint32_t c) {
   for (uint16_t i = 0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
-    strip.show();
-    delay(wait);
   }
+  strip.show();
 }
