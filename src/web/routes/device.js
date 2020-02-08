@@ -20,6 +20,14 @@ router.get('/', (req, res) => {
     res.send('Device');
 });
 
+// get DeviceID
+router.get('/getID',(req,res)=>{
+    if(req.user && req.user.device) {
+        return res.send(req.user.device);
+    } else
+        return res.send(null);
+});
+
 // DataUpload
 router.post('/data/upload', (req, res) => {
     const device = req.body.device;

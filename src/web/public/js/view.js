@@ -16,7 +16,7 @@ const getDeviceID = () => {
     let deviceID = null;
     $.ajax({
         type: 'get',
-        url: '/view/deviceID',
+        url: '/device/getID',
         async: false
     }).done((result) => {
         deviceID = result;
@@ -154,7 +154,7 @@ const readDeviceData = (callback) => {
 let cDownloadInterval = 5000;
 const airCleanerTimer = () => {
     const deviceSetting = readDeviceSetting();
-    if(deviceSetting.delayDownload !== cDownloadInterval)
+    if (deviceSetting.delayDownload !== cDownloadInterval)
         cDownloadInterval = deviceSetting.delayDownload;
 
     setTimeout(airCleanerTimer, cDownloadInterval);
