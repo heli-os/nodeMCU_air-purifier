@@ -7,6 +7,7 @@
 |SignIn|POST|/authentication|
 |SignUp|POST|/authentication/new|
 |view|GET|/view|
+|getDeviceID|GET|/device/getID|
 |DataUpload|POST|/device/data/upload|
 |DataDownload|POST|/device/data/download|
 |SettingUpload|POST|/device/setting/upload|
