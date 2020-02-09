@@ -1,14 +1,146 @@
-html
+html(lang='ko')
     head
         include head.pug
         script(src='/static/vendor/chartjs/Chart.min.js')
         script(src='/static/js/view.js')
+        link(href='/static/style/font-awesome.min.css' rel='stylesheet' type='text/css')
+        link(href='/static/style/milligram.css' rel='stylesheet' type='text/css')
+        link(href='/static/style/view.css' rel='stylesheet' type='text/css')
     body
-        p
-            | hello,
-            = username
+        .navbar
+            .row
+                .column.col-site-title
+                    a.site-title.float-left(href='/') Genie-YNC
+                //.column.col-search
+                //    a.search-btn.fa.fa-search(href='#')
+                //    input(type='text' name='' value='' placeholder='Search...')
+                .column
+                    .user-section
+                        a(href='/authentication/signout')
+                            img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='50' height='auto')
+                            .username
+                                h4= username
+                                p Administrator
+        .row
+            #sidebar.column
+                h5 Navigation
+                ul
+                    li
+                        a(href='#')
+                            em.fa.fa-home
+                            |  Home
+                    li
+                        a(href='#charts')
+                            em.fa.fa-bar-chart
+                            |  Charts
+                    li
+                        a(href='#widgets')
+                            em.fa.fa.fa-clone
+                            |  Widgets
+            section#main-content.column.column-offset-20
+                .row.grid-responsive
+                    .column.page-heading
+                        .large-card
+                            h1 Update account settings
+                            p.text-large
+                                | You can change settings for your account on this section.
+                            p
+                                | Please press the button below to continue.
+                                em (if you want.)
+                            a.button Setting
+                // Charts
+                h5 Charts
+                a.anchor(name='charts')
+                .row.grid-responsive
+                    .column.column-70
+                        .card
+                            .card-title
+                                h2 Line Chart
+                            .card-block
+                                .canvas-wrapper
+                                    canvas#myChart(height='261' width='auto')
+                    .column.column-25.pm_section.nanumgothic
+                        .card
+                            .card-title
+                                .pm_step 미세먼지
+                            .card-block
+                                .pm_step.pm10_0_step &nbsp;
+                        .card
+                            .card-title
+                                .pm_step 초미세먼지
+                            .card-block
+                                .pm_step.pm2_5_step &nbsp;
+                        .card
+                            .card-title
+                                .pm_step 극미세먼지
+                            .card-block
+                                .pm_step.pm1_0_step &nbsp;
+                // Widgets
+                h5.mt-2 Widgets
+                a.anchor(name='widgets')
+                .row.grid-responsive.mt-1
+                    .column
+                        .card
+                            .card-title
+                                h2.float-left Notifications
+                                .badge.background-primary.float-right 36
+                                .clearfix
+                            .card-block
+                                .mt-1
+                                    img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='45' height='auto')
+                                    .float-left.ml-1
+                                        p.m-0
+                                            strong Jane Donovan
+                                            span.text-muted uploaded a new photo
+                                        p.text-small.text-muted 30 minutes ago
+                                    .clearfix
+                                    hr.m-0.mb-2
+                                .mt-1
+                                    img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='45' height='auto')
+                                    .float-left.ml-1
+                                        p.m-0
+                                            strong Sam Davidson
+                                            span.text-muted just replied to your message
+                                        p.text-small.text-muted 12 hours ago
+                                    .clearfix
+                                    hr.m-0.mb-2
+                                .mt-1
+                                    img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='45' height='auto')
+                                    .float-left.ml-1
+                                        p.m-0
+                                            strong Kelly Johnson
+                                            span.text-muted changed her status
+                                        p.text-small.text-muted 2 days ago
+                                    .clearfix
+                    .column
+                        .card
+                            .card-title
+                                h2.float-left Projects
+                                .badge.float-right 5 In Progress
+                                .badge.background-success.float-right.mr-1 12 Complete
+                                .clearfix
+                            .card-block.progress-bars
+                                h5.float-left.mt-1 Web(Node.JS)
+                                p.float-right.text-small.text-muted.mt-1 75%
+                                .clearfix
+                                .progress-bar
+                                    .progress.background-primary(style='width: 75%;')
+                                h5.float-left.mt-1 DataBase
+                                p.float-right.text-small.text-muted.mt-1 90%
+                                .clearfix
+                                .progress-bar
+                                    .progress.background-primary(style='width: 90%;')
+                                h5.float-left.mt-1 Hardware
+                                p.float-right.text-small.text-muted.mt-1 75%
+                                .clearfix
+                                .progress-bar
+                                    .progress.background-primary(style='width: 75%;')
+                                h5.float-left.mt-1 Document
+                                p.float-right.text-small.text-muted.mt-1 20%
+                                .clearfix
+                                .progress-bar
+                                    .progress.background-primary(style='width: 20%;')
 
-        a(href='/authentication/signout') signout
-
-        div(style={width: '75%', margin: '0 auto'})
-            canvas(id='myChart')
+                p.credit
+                    | Smart Air Cleaner CMS - GENIE by&nbsp;
+                    a(href='https://https://genie.jupiterflow.com') JupiterFlow

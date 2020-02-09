@@ -11,7 +11,6 @@ const leadingZeros = (n, digits) => {
 let ctx;
 let myChart;
 let chartOptions;
-
 const getDeviceID = () => {
     let deviceID = null;
     $.ajax({
@@ -48,6 +47,59 @@ const readDeviceSetting = () => {
     return delayObj;
 };
 
+const convertStepToMsg = (step) => {
+    let msg = '';
+    switch(step) {
+        case 0:
+            msg = '최고';
+            break;
+        case 1:
+            msg = '좋음';
+            break;
+        case 2:
+            msg = '양호';
+            break;
+        case 3:
+            msg = '보통';
+            break;
+        case 4:
+            msg = '나쁨';
+            break;
+        case 5:
+            msg = '상당히 나쁨';
+            break;
+        case 6:
+            msg = '매우 나쁨';
+            break;
+        case 7:
+            msg = '최악';
+            break;
+    }
+    return msg;
+};
+
+const setStepClass = (pm_step) => {
+    const pm1_0_step = pm_step.pm1_0_step
+    const pm2_5_step = pm_step.pm2_5_step;
+    const pm10_0_step = pm_step.pm10_0_step;
+
+    const pm10_0_section = $('.pm_section .card:nth-child(1)');
+    const pm2_5_section = $('.pm_section .card:nth-child(2)');
+    const pm1_0_section = $('.pm_section .card:nth-child(3)');
+
+    pm1_0_section.removeClass();
+    pm2_5_section.removeClass();
+    pm10_0_section.removeClass();
+
+    pm1_0_section.addClass('card color-step' + pm1_0_step);
+    pm2_5_section.addClass('card color-step' + pm2_5_step);
+    pm10_0_section.addClass('card color-step' + pm10_0_step);
+
+    pm1_0_section.children('.card-block').children('div').text(convertStepToMsg(pm1_0_step));
+    pm2_5_section.children('.card-block').children('div').text(convertStepToMsg(pm2_5_step));
+    pm10_0_section.children('.card-block').children('div').text(convertStepToMsg(pm10_0_step));
+};
+
 const readDeviceData = (callback) => {
     const deviceID = getDeviceID();
     if (!deviceID) {
@@ -79,6 +131,14 @@ const readDeviceData = (callback) => {
             return rec.pm10_0_value;
         }).reverse();
 
+        const pm_step = {
+            pm1_0_step: record[0].pm1_0_step,
+            pm2_5_step: record[0].pm2_5_step,
+            pm10_0_step: record[0].pm10_0_step
+        };
+
+        setStepClass(pm_step);
+
         chartOptions = {
             type: 'line',
             data: {
@@ -101,8 +161,8 @@ const readDeviceData = (callback) => {
                     },
                     {
                         label: '극미세먼지',
-                        borderColor: 'rgb(0,255,145)',
-                        backgroundColor: 'rgb(0,255,145)',
+                        borderColor: 'rgb(53, 206, 190)',
+                        backgroundColor: 'rgb(53, 206, 190)',
                         borderDash: [5, 5],
                         fill: false,
                         data: pm1_0_value
@@ -111,6 +171,7 @@ const readDeviceData = (callback) => {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 animation: false,
                 title: {
                     display: true,
@@ -159,7 +220,7 @@ const airCleanerTimer = () => {
 
     setTimeout(airCleanerTimer, cDownloadInterval);
     readDeviceData(() => {
-        myChart.reset();
+        myChart.destroy();
     });
 };
 $(window).on('load', () => {

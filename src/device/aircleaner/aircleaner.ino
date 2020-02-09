@@ -12,15 +12,16 @@ const char* password = "cf4c9zukj7irr";
 #define PIN 25
 #define NUM_LEDS 8
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
-const uint32_t colorStep_0 = strip.Color(28, 117, 211); // 최고 좋음
-const uint32_t colorStep_1 = strip.Color(1, 156, 228);  // 좋음
-const uint32_t colorStep_2 = strip.Color(0, 173, 196);  // 양호
-const uint32_t colorStep_3 = strip.Color(59, 140, 62);  // 보통
-const uint32_t colorStep_4 = strip.Color(251, 140, 0);  // 나쁨
-const uint32_t colorStep_5 = strip.Color(230, 74, 25);  // 상당히 나쁨
-const uint32_t colorStep_6 = strip.Color(213, 47, 47);  // 매우 나쁨
-const uint32_t colorStep_7 = strip.Color(33, 33, 33);   // 최악
-
+const uint32_t colorStep[8] = {
+  strip.Color(28, 117, 211), // 최고 좋음
+  strip.Color(1, 156, 228),  // 좋음
+  strip.Color(0, 173, 196),  // 양호
+  strip.Color(59, 140, 62),  // 보통
+  strip.Color(251, 140, 0),  // 나쁨
+  strip.Color(230, 74, 25),  // 상당히 나쁨
+  strip.Color(213, 47, 47),  // 매우 나쁨
+  strip.Color(33, 33, 33)   // 최악
+};
 
 #define DEBUG_OUT Serial
 
@@ -112,6 +113,7 @@ void loop() {
     if (timerNow - timerBefore >= PMS_READ_GAP) {
       timerBefore = timerNow;
       readData();
+      convertValueToStep();
       renderData();
       uploadData();
     }
@@ -123,6 +125,66 @@ void createDeviceID() {
   uint64_t chipid = ESP.getEfuseMac(); //The chip ID is essentially its MAC address(length: 6 bytes).
   uint16_t chip = (uint16_t)(chipid >> 32);
   snprintf(deviceID, 15, "LoRaHam-%04X", chip);
+}
+
+void convertValueToStep() {
+  // PM10.0(미세먼지)
+  if (pm10_0_value <= 15) {
+    pm10_0_step = 0;
+  } else if (pm10_0_value <= 30) {
+    pm10_0_step = 1;
+  } else if (pm10_0_value <= 40) {
+    pm10_0_step = 2;
+  } else if (pm10_0_value <= 50) {
+    pm10_0_step = 3;
+  } else if (pm10_0_value <= 75) {
+    pm10_0_step = 4;
+  } else if (pm10_0_value <= 100) {
+    pm10_0_step = 5;
+  } else if (pm10_0_value <= 150) {
+    pm10_0_step = 6;
+  } else {
+    pm10_0_step = 7;
+  }
+
+  // PM2.5(초미세먼지)
+  if (pm2_5_value <= 8) {
+    pm2_5_step = 0;
+  } else if (pm2_5_value <= 15) {
+    pm2_5_step = 1;
+  } else if (pm2_5_value <= 20) {
+    pm2_5_step = 2;
+  } else if (pm2_5_value <= 25) {
+    pm2_5_step = 3;
+  } else if (pm2_5_value <= 37) {
+    pm2_5_step = 4;
+  } else if (pm2_5_value <= 50) {
+    pm2_5_step = 5;
+  } else if (pm2_5_value <= 75) {
+    pm2_5_step = 6;
+  } else {
+    pm2_5_step = 7;
+  }
+
+
+  // PM1.0(극미세먼지)
+  if (pm1_0_value <= 4) {
+    pm1_0_step = 0;
+  } else if (pm1_0_value <= 8) {
+    pm1_0_step = 1;
+  } else if (pm1_0_value <= 12) {
+    pm1_0_step = 2;
+  } else if (pm1_0_value <= 17) {
+    pm1_0_step = 3;
+  } else if (pm1_0_value <= 22) {
+    pm1_0_step = 4;
+  } else if (pm1_0_value <= 30) {
+    pm1_0_step = 5;
+  } else if (pm1_0_value <= 50) {
+    pm1_0_step = 6;
+  } else {
+    pm1_0_step = 7;
+  }
 }
 
 // PMS7003센서에 측정요청을 하고 데이터를 읽어와서 시리얼 화면에 표시하는 함수
@@ -150,14 +212,9 @@ void readData() {
 void renderData() {
   DEBUG_OUT.println();
 
-  DEBUG_OUT.print("PM 1.0 (ug/m3): ");
-  DEBUG_OUT.println(pm1_0_value);
-
-  DEBUG_OUT.print("PM 2.5 (ug/m3): ");
-  DEBUG_OUT.println(pm2_5_value);
-
-  DEBUG_OUT.print("PM 10.0 (ug/m3): ");
-  DEBUG_OUT.println(pm10_0_value);
+  DEBUG_OUT.printf("PM 1.0 (ug/m3): %d - %d\r\n", pm1_0_value, pm1_0_step);
+  DEBUG_OUT.printf("PM 2.5 (ug/m3): %d - %d\r\n", pm2_5_value, pm2_5_step);
+  DEBUG_OUT.printf("PM 10.0 (ug/m3): %d - %d\r\n", pm10_0_value, pm10_0_step);
 
   DEBUG_OUT.println();
 }

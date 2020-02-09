@@ -37,8 +37,6 @@ router.post('/data/upload', (req, res) => {
     const pm2_5_step = req.body.pm2_5_step;
     const pm10_0_value = req.body.pm10_0_value;
     const pm10_0_step = req.body.pm10_0_step;
-
-    console.log(req.body);
     const params = [device, pm1_0_value, pm1_0_step, pm2_5_value, pm2_5_step, pm10_0_value, pm10_0_step];
     mysqlClient.query("INSERT INTO device_data (device,pm1_0_value,pm1_0_step,pm2_5_value,pm2_5_step,pm10_0_value,pm10_0_step) VALUES(?,?,?,?,?,?,?)", params, (err, rows, fields) => {
         // console.log(data);
