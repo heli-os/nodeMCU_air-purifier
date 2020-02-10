@@ -21,8 +21,8 @@ router.get('/', (req, res) => {
 });
 
 // get DeviceID
-router.get('/getID',(req,res)=>{
-    if(req.user && req.user.device) {
+router.get('/getID', (req, res) => {
+    if (req.user && req.user.device) {
         return res.send(req.user.device);
     } else
         return res.send(null);
@@ -77,26 +77,29 @@ router.post('/data/download', (req, res) => {
 // SettingUpload
 router.post('/setting/upload', (req, res) => {
     const device = req.body.device;
-    const delayUpload = req.body.delayUpload;
-    const delayDownload = req.body.delayDownload;
+    const modeLED = parseInt(req.body.modeLED);
+    const delayUpload = parseInt(req.body.delaySync);
+    const delayDownload = parseInt(req.body.delaySync);
+    const modePower = parseInt(req.body.modePower);
+
     mysqlClient.query("SELECT * FROM device_setting WHERE device=?", device, (err, rows, fields) => {
         if (err) {
             return res.status(500).json(responseJSON.create('FAIL', '에러 발생', 'device setting upload 쿼리 실행 중 오류가 발생하였습니다.'));
         }
         if (rows.length === 0) {
-            mysqlClient.query("INSERT INTO device_setting (device) VALUES(?)", device, (err, rows, fields) => {
+            mysqlClient.query("INSERT INTO device_setting device VALUES ?", device, (err, rows, fields) => {
                 if (err) {
                     return res.status(500).json(responseJSON.create('FAIL', '에러 발생', 'device setting upload 초기화 쿼리 실행 중 오류가 발생하였습니다.'));
                 } else {
-                    return res.status(200).json(responseJSON.create('SUCCESS', '업로드 성공', 'device setting upload에 성공하였습니다.'));
+                    return res.status(200).json(responseJSON.create('SUCCESS', '설정 저장 성공', '설정을 저장하였습니다.'));
                 }
             });
         } else {
-            mysqlClient.query("UPDATE device_setting SET delayUpload=?, delayDownload=? WHERE device=?", delayUpload, delayDownload, device, (err, rows, fields) => {
+            mysqlClient.query("UPDATE device_setting SET modeLED=?, modePower=?, delayUpload=?, delayDownload=? WHERE device=?", [modeLED, modePower, delayUpload, delayDownload, device], (err, rows, fields) => {
                 if (err) {
                     return res.status(500).json(responseJSON.create('FAIL', '에러 발생', 'device setting upload 업데이트 쿼리 실행 중 오류가 발생하였습니다.'));
                 } else {
-                    return res.status(200).json(responseJSON.create('SUCCESS', '업데이트 성공', 'device setting upload 업데이트에 성공하였습니다.'));
+                    return res.status(200).json(responseJSON.create('SUCCESS', '설정 저장 성공', '설정을 저장하였습니다.'));
                 }
             });
         }
@@ -118,6 +121,8 @@ router.post('/setting/download', (req, res) => {
                     return res.status(200).json({
                         state: 'SUCCESS',
                         data: {
+                            modeLED: 0,
+                            modePower: 0,
                             delayUpload: 5000,
                             delayDownload: 5000
                         }

@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const authenticationRouter = require('./routes/authentication');
 const viewRouter = require('./routes/view');
 const deviceRouter = require('./routes/device');
+const kakaoReouter = require('./routes/kakao-skill');
 
 // Passport
 const passport = require('passport');
@@ -80,3 +81,4 @@ app.use('/', indexRouter);
 app.use('/authentication', authenticationRouter);
 app.use('/view', viewRouter);
 app.use('/device', deviceRouter);
+app.use('/kakao',kakaoReouter);

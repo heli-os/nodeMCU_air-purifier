@@ -47,7 +47,24 @@ html(lang='ko')
                             p
                                 | Please press the button below to continue.
                                 em (if you want.)
-                            a.button Setting
+                            span.button#settingBtn Setting-OPEN
+                            .setting-form.nanumgothic
+                                form
+                                    p
+                                        | 새로고침 딜레이
+                                        input(type='number' placeholder='delaySync' value='' name='delaySync')
+                                    p
+                                        | LED 모드
+                                        select(name='modeLED' style='padding: 0 20px 0 20px; font-size:14px')
+                                            option(value=0) 평균
+                                            option(value=1) 미세먼지
+                                            option(value=2) 초미세먼지
+                                            option(value=3) 극미세먼지
+                                    p
+                                        | 작동 설정
+                                        span.button.powerMode 전원 ON
+                                    p
+                                        span.button.settingSave 저장
                 // Charts
                 h5 Charts
                 a.anchor(name='charts')
@@ -82,49 +99,16 @@ html(lang='ko')
                     .column
                         .card
                             .card-title
-                                h2.float-left Notifications
-                                .badge.background-primary.float-right 36
-                                .clearfix
-                            .card-block
-                                .mt-1
-                                    img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='45' height='auto')
-                                    .float-left.ml-1
-                                        p.m-0
-                                            strong Jane Donovan
-                                            span.text-muted uploaded a new photo
-                                        p.text-small.text-muted 30 minutes ago
-                                    .clearfix
-                                    hr.m-0.mb-2
-                                .mt-1
-                                    img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='45' height='auto')
-                                    .float-left.ml-1
-                                        p.m-0
-                                            strong Sam Davidson
-                                            span.text-muted just replied to your message
-                                        p.text-small.text-muted 12 hours ago
-                                    .clearfix
-                                    hr.m-0.mb-2
-                                .mt-1
-                                    img.circle.float-left.profile-photo(src='/static/images/jupiter.png' alt='profile photo' width='45' height='auto')
-                                    .float-left.ml-1
-                                        p.m-0
-                                            strong Kelly Johnson
-                                            span.text-muted changed her status
-                                        p.text-small.text-muted 2 days ago
-                                    .clearfix
-                    .column
-                        .card
-                            .card-title
                                 h2.float-left Projects
                                 .badge.float-right 5 In Progress
                                 .badge.background-success.float-right.mr-1 12 Complete
                                 .clearfix
                             .card-block.progress-bars
                                 h5.float-left.mt-1 Web(Node.JS)
-                                p.float-right.text-small.text-muted.mt-1 75%
+                                p.float-right.text-small.text-muted.mt-1 90%
                                 .clearfix
                                 .progress-bar
-                                    .progress.background-primary(style='width: 75%;')
+                                    .progress.background-primary(style='width: 90%;')
                                 h5.float-left.mt-1 DataBase
                                 p.float-right.text-small.text-muted.mt-1 90%
                                 .clearfix

@@ -30,8 +30,11 @@ const readDeviceSetting = () => {
         return;
     }
     let delayObj = {
+        modeLED: 0,
+        modePower: 0,
         delayUpload: 0,
-        delayDownload: 0
+        delayDownload: 0,
+        delaySync: 0
     };
     $.ajax({
         type: 'post',
@@ -41,15 +44,18 @@ const readDeviceSetting = () => {
         async: false
     }).done((result) => {
         const record = result.data;
+        delayObj.modeLED = record.modeLED;
+        delayObj.modePower = record.modePower;
         delayObj.delayUpload = record.delayUpload;
         delayObj.delayDownload = record.delayDownload;
+        delayObj.delaySync = record.delayDownload;
     });
     return delayObj;
 };
 
 const convertStepToMsg = (step) => {
     let msg = '';
-    switch(step) {
+    switch (step) {
         case 0:
             msg = '최고';
             break;
@@ -215,16 +221,108 @@ const readDeviceData = (callback) => {
 let cDownloadInterval = 5000;
 const airCleanerTimer = () => {
     const deviceSetting = readDeviceSetting();
-    if (deviceSetting.delayDownload !== cDownloadInterval)
-        cDownloadInterval = deviceSetting.delayDownload;
+    if (deviceSetting.delaySync !== cDownloadInterval)
+        cDownloadInterval = deviceSetting.delaySync;
 
     setTimeout(airCleanerTimer, cDownloadInterval);
     readDeviceData(() => {
         myChart.destroy();
     });
 };
+const toggleSettingBtn = () => {
+    const settingBtn = $('#settingBtn');
+    if (settingBtn.text() === 'Setting-OPEN') {
+        const deviceSetting = readDeviceSetting();
+        $('.setting-form form input[name=delaySync]').val(deviceSetting.delaySync);
+
+        $('.setting-form form select[name=modeLED] option').prop('selected', false);
+        $('.setting-form form select[name=modeLED] option:eq(' + deviceSetting.modeLED + ')').prop('selected', true);
+        settingBtn.on('mouseout', () => {
+            settingBtn.css('border-color', '#333');
+            settingBtn.css('background-color', '#333');
+        });
+        settingBtn.on('mouseover', () => {
+            settingBtn.css('border-color', '#35cebe');
+            settingBtn.css('background-color', '#35cebe');
+        });
+
+        const powerModeBtn = $('.setting-form span.button.powerMode');
+        if (deviceSetting.modePower === 0) {
+            powerModeBtn.text('전원 ON');
+            powerModeBtn.css('background-color', 'rgb(28, 117, 211)');
+            powerModeBtn.css('border-color', 'rgb(28, 117, 211)');
+        } else if (deviceSetting.modePower === 1) {
+            powerModeBtn.text('수면모드');
+            powerModeBtn.css('background-color', 'rgb(59, 140, 62)');
+            powerModeBtn.css('border-color', 'rgb(59, 140, 62)');
+        } else if (deviceSetting.modePower === 2) {
+            powerModeBtn.text('전원 OFF');
+            powerModeBtn.css('background-color', 'rgb(213, 47, 47)');
+            powerModeBtn.css('border-color', 'rgb(213, 47, 47)');
+        }
+
+        settingBtn.text('Setting-CLOSE');
+    } else {
+        settingBtn.on('mouseout', () => {
+            settingBtn.css('border-color', '#35cebe');
+            settingBtn.css('background-color', '#35cebe');
+        });
+        settingBtn.on('mouseover', () => {
+            settingBtn.css('border-color', '#333');
+            settingBtn.css('background-color', '#333');
+        });
+        settingBtn.text('Setting-OPEN');
+    }
+    const settingForm = $('.setting-form');
+    settingForm.toggle(400);
+};
+const saveSetting = (formData) => {
+    const deviceID = getDeviceID();
+    if (!deviceID) {
+        console.log('exit');
+        return;
+    }
+    const powerModeBtnText = $('.setting-form span.button.powerMode').text() === '전원 ON'
+        ? 0
+        : $('.setting-form span.button.powerMode').text() === '수면모드' ? 1 : 2;
+
+    $.ajax({
+        type: 'post',
+        url: '/device/setting/upload',
+        data: formData.concat('&device=' + deviceID + '&modePower=' + powerModeBtnText),
+        dataType: 'json'
+    }).done((result) => {
+        if (result.state === "SUCCESS") {
+            alert(result.properties.Message);
+            toggleSettingBtn();
+        }
+    });
+};
 $(window).on('load', () => {
     ctx = $('#myChart');
     readDeviceData();
     setTimeout(airCleanerTimer, cDownloadInterval);
+    $('#settingBtn').on('click', toggleSettingBtn);
+
+    $('.setting-form span.button.powerMode').on('click', () => {
+        const powerModeBtn = $('.setting-form span.button.powerMode');
+        if (powerModeBtn.text() === '전원 ON') {
+            powerModeBtn.text('수면모드');
+            powerModeBtn.css('background-color', 'rgb(59, 140, 62)');
+            powerModeBtn.css('border-color', 'rgb(59, 140, 62)');
+        } else if (powerModeBtn.text() === '수면모드') {
+            powerModeBtn.text('전원 OFF');
+            powerModeBtn.css('background-color', 'rgb(213, 47, 47)');
+            powerModeBtn.css('border-color', 'rgb(213, 47, 47)');
+        } else if (powerModeBtn.text() === '전원 OFF') {
+            powerModeBtn.text('전원 ON');
+            powerModeBtn.css('background-color', 'rgb(28, 117, 211)');
+            powerModeBtn.css('border-color', 'rgb(28, 117, 211)');
+        }
+    });
+
+    $('.setting-form span.button.settingSave').on('click', () => {
+        const formData = $('.setting-form form').serialize();
+        saveSetting(formData);
+    });
 });

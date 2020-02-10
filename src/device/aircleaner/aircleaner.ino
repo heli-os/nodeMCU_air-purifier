@@ -3,13 +3,14 @@
 #include <SoftwareSerial.h>
 #include <PMS.h>
 #include <ArduinoHttpClient.h>
+#include <ArduinoJson.h>
 
 char deviceID[15]; //Create a Unique AP from MAC address
 
 const char* ssid     = "Jinssssun";
 const char* password = "cf4c9zukj7irr";
 
-#define PIN 25
+#define PIN 32
 #define NUM_LEDS 8
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 const uint32_t colorStep[8] = {
@@ -44,6 +45,9 @@ short pm2_5_value = 0;
 short pm2_5_step = 0;
 short pm1_0_value = 0;
 short pm1_0_step = 0;
+
+short modeLED = 0;
+short modePower = 0;
 
 
 // 전역변수 선언
@@ -89,6 +93,7 @@ void setup()
   DEBUG_OUT.println(WiFi.localIP());
 
   strip.begin();
+  strip.show();
 
   // 패시브모드로 변경 후 센서 대기상태로 설정
   pms.passiveMode();
@@ -107,18 +112,50 @@ void loop() {
     timerLast = millis();
     PMS_POWER = true;
   }
+
   // 센서가 깨어나고나서 최소대기상태를 지났을 때만 측정간격을 두고 측정 실시
   uint32_t timerNow = millis();
   if (timerNow - timerLast >= PMS_READ_DELAY) {
-    if (timerNow - timerBefore >= PMS_READ_GAP) {
-      timerBefore = timerNow;
-      readData();
-      convertValueToStep();
-      renderData();
-      uploadData();
+    readSetting();
+    if (modePower == 0 || modePower == 1) {
+      if (timerNow - timerBefore >= PMS_READ_GAP) {
+        timerBefore = timerNow;
+        readData();
+        convertValueToStep();
+        renderData();
+        if (modePower == 0) {
+          turnOnLED();
+        } else if (modePower == 1) {
+          setColor(strip.Color(0, 0, 0));
+        }
+        digitalWrite(26, HIGH);
+        uploadData();
+      }
+    } else if (modePower == 2) {
+      digitalWrite(26, LOW);
     }
   }
 
+}
+
+void turnOnLED() {
+  short stepLED = 0;
+  switch (modeLED) {
+    case 0:
+      stepLED = (pm10_0_step + pm2_5_step + pm1_0_step) / 3;
+      break;
+    case 1:
+      stepLED = pm10_0_step;
+      break;
+    case 2:
+      stepLED = pm2_5_step;
+      break;
+    case 3:
+      stepLED = pm1_0_step;
+      break;
+  }
+  DEBUG_OUT.printf("stepLED:%d\r\n", stepLED);
+  setColor(colorStep[stepLED]);
 }
 
 void createDeviceID() {
@@ -187,6 +224,42 @@ void convertValueToStep() {
   }
 }
 
+void readSetting() {
+  if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
+    String contentType = "application/x-www-form-urlencoded";
+    char bodyData[50] = {0,};
+    sprintf(bodyData, "device=%s", deviceID);
+
+    DEBUG_OUT.printf("bodyData:%s\r\n", bodyData);
+    client.post("/device/setting/download", contentType, bodyData);
+    DEBUG_OUT.println("post success");
+
+    // read the status code and body of the response
+    int statusCode = client.responseStatusCode();
+    DEBUG_OUT.println(statusCode);
+    String responseBody = client.responseBody();
+    DEBUG_OUT.println(responseBody);
+    StaticJsonDocument<200> doc;
+
+    DeserializationError error = deserializeJson(doc, responseBody);
+    if (error) {
+      DEBUG_OUT.print(F("deserializeJson() failed: "));
+      DEBUG_OUT.println(error.c_str());
+      return;
+    }
+
+    modeLED = doc["data"]["modeLED"];
+    modePower = doc["data"]["modePower"];
+    PMS_READ_GAP = doc["data"]["delayUpload"];
+
+    DEBUG_OUT.printf("modeLED:%d, modePower:%d, delay:%d\r\n", modeLED, modePower, PMS_READ_GAP);
+
+
+  } else {
+    DEBUG_OUT.println("Error in WiFi connection");
+  }
+}
+
 // PMS7003센서에 측정요청을 하고 데이터를 읽어와서 시리얼 화면에 표시하는 함수
 void readData() {
   PMS::DATA data;
@@ -227,7 +300,7 @@ void uploadData() {
     char bodyData[150] = {0,};
     sprintf(bodyData, "device=%s&pm1_0_value=%d&pm1_0_step=%d&pm2_5_value=%d&pm2_5_step=%d&pm10_0_value=%d&pm10_0_step=%d", deviceID, pm1_0_value, pm1_0_step, pm2_5_value, pm2_5_step, pm10_0_value, pm10_0_step);
 
-    DEBUG_OUT.printf("bodyData:%s\r\n%d\r\n", bodyData, strlen(bodyData));
+    DEBUG_OUT.printf("bodyData:%s\r\n", bodyData);
     client.post("/device/data/upload", contentType, bodyData);
     DEBUG_OUT.println("post success");
 
