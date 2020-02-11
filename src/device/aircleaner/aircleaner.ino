@@ -7,8 +7,11 @@
 
 char deviceID[15]; //Create a Unique AP from MAC address
 
-const char* ssid     = "Jinssssun";
+const char* ssid     = "JupiterFlow";
 const char* password = "cf4c9zukj7irr";
+//const char* ssid     = "olleh_WiFi_BBCC";
+//const char* ssid = "olleh_GiGA_WiFi_BBCC";
+//const char* password = "0000001840 ";
 
 #define PIN 32
 #define NUM_LEDS 8
@@ -117,25 +120,24 @@ void loop() {
   uint32_t timerNow = millis();
   if (timerNow - timerLast >= PMS_READ_DELAY) {
     readSetting();
-    if (modePower == 0 || modePower == 1) {
-      if (timerNow - timerBefore >= PMS_READ_GAP) {
-        timerBefore = timerNow;
-        readData();
-        convertValueToStep();
-        renderData();
-        if (modePower == 0) {
-          turnOnLED();
-        } else if (modePower == 1) {
-          setColor(strip.Color(0, 0, 0));
-        }
+    if (timerNow - timerBefore >= PMS_READ_GAP) {
+      timerBefore = timerNow;
+      readData();
+      convertValueToStep();
+      renderData();
+      uploadData();
+      if (modePower == 0) {
+        turnOnLED();
         digitalWrite(26, HIGH);
-        uploadData();
+      } else if (modePower == 1) {
+        setColor(strip.Color(0, 0, 0));
+        digitalWrite(26, HIGH);
+      } else if (modePower == 2) {
+        setColor(strip.Color(0, 0, 0));
+        digitalWrite(26, LOW);
       }
-    } else if (modePower == 2) {
-      digitalWrite(26, LOW);
     }
   }
-
 }
 
 void turnOnLED() {
@@ -230,7 +232,7 @@ void readSetting() {
     char bodyData[50] = {0,};
     sprintf(bodyData, "device=%s", deviceID);
 
-    DEBUG_OUT.printf("bodyData:%s\r\n", bodyData);
+    DEBUG_OUT.printf("readSetting() => bodyData:%s\r\n", bodyData);
     client.post("/device/setting/download", contentType, bodyData);
     DEBUG_OUT.println("post success");
 
@@ -239,6 +241,7 @@ void readSetting() {
     DEBUG_OUT.println(statusCode);
     String responseBody = client.responseBody();
     DEBUG_OUT.println(responseBody);
+    
     StaticJsonDocument<200> doc;
 
     DeserializationError error = deserializeJson(doc, responseBody);
@@ -300,7 +303,7 @@ void uploadData() {
     char bodyData[150] = {0,};
     sprintf(bodyData, "device=%s&pm1_0_value=%d&pm1_0_step=%d&pm2_5_value=%d&pm2_5_step=%d&pm10_0_value=%d&pm10_0_step=%d", deviceID, pm1_0_value, pm1_0_step, pm2_5_value, pm2_5_step, pm10_0_value, pm10_0_step);
 
-    DEBUG_OUT.printf("bodyData:%s\r\n", bodyData);
+    DEBUG_OUT.printf("uploadData()=> bodyData:%s\r\n", bodyData);
     client.post("/device/data/upload", contentType, bodyData);
     DEBUG_OUT.println("post success");
 

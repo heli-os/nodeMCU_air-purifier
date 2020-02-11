@@ -38,6 +38,7 @@ router.post('/data/upload', (req, res) => {
     const pm10_0_value = req.body.pm10_0_value;
     const pm10_0_step = req.body.pm10_0_step;
     const params = [device, pm1_0_value, pm1_0_step, pm2_5_value, pm2_5_step, pm10_0_value, pm10_0_step];
+    console.log(req.body);
     mysqlClient.query("INSERT INTO device_data (device,pm1_0_value,pm1_0_step,pm2_5_value,pm2_5_step,pm10_0_value,pm10_0_step) VALUES(?,?,?,?,?,?,?)", params, (err, rows, fields) => {
         // console.log(data);
         if (err) {
@@ -107,7 +108,7 @@ router.post('/setting/upload', (req, res) => {
 });
 
 // SettingDownload
-router.post('/setting/download', (req, res) => {
+router.post('/setting/download', (req, res, next) => {
     const device = req.body.device;
     mysqlClient.query("SELECT * FROM device_setting WHERE device=?", device, (err, rows, fields) => {
         if (err) {
@@ -117,7 +118,7 @@ router.post('/setting/download', (req, res) => {
             mysqlClient.query("INSERT INTO device_setting (device) VALUES(?)", device, (err, rows, fields) => {
                 if (err) {
                     return res.status(500).json(responseJSON.create('FAIL', '에러 발생', 'device setting download 초기화 쿼리 실행 중 오류가 발생하였습니다.'));
-                } else {
+                } else {;
                     return res.status(200).json({
                         state: 'SUCCESS',
                         data: {

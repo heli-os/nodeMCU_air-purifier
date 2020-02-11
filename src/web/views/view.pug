@@ -69,28 +69,34 @@ html(lang='ko')
                 h5 Charts
                 a.anchor(name='charts')
                 .row.grid-responsive
-                    .column.column-70
+                    .column.column-100
                         .card
                             .card-title
                                 h2 Line Chart
                             .card-block
                                 .canvas-wrapper
                                     canvas#myChart(height='261' width='auto')
-                    .column.column-25.pm_section.nanumgothic
+                .row.grid-responsive.pm_section.nanumgothic
+                    .column.column-33
                         .card
                             .card-title
                                 .pm_step 미세먼지
                             .card-block
+                                .step-img
                                 .pm_step.pm10_0_step &nbsp;
+                    .column.column-33
                         .card
                             .card-title
                                 .pm_step 초미세먼지
                             .card-block
+                                .step-img
                                 .pm_step.pm2_5_step &nbsp;
+                    .column.column-33
                         .card
                             .card-title
                                 .pm_step 극미세먼지
                             .card-block
+                                .step-img
                                 .pm_step.pm1_0_step &nbsp;
                 // Widgets
                 h5.mt-2 Widgets
@@ -100,25 +106,25 @@ html(lang='ko')
                         .card
                             .card-title
                                 h2.float-left Projects
-                                .badge.float-right 5 In Progress
-                                .badge.background-success.float-right.mr-1 12 Complete
+                                .badge.float-right 3 In Progress
+                                .badge.background-success.float-right.mr-1 16 Complete
                                 .clearfix
                             .card-block.progress-bars
                                 h5.float-left.mt-1 Web(Node.JS)
-                                p.float-right.text-small.text-muted.mt-1 90%
+                                p.float-right.text-small.text-muted.mt-1 95%
                                 .clearfix
                                 .progress-bar
-                                    .progress.background-primary(style='width: 90%;')
+                                    .progress.background-primary(style='width: 95%;')
                                 h5.float-left.mt-1 DataBase
-                                p.float-right.text-small.text-muted.mt-1 90%
+                                p.float-right.text-small.text-muted.mt-1 95%
                                 .clearfix
                                 .progress-bar
-                                    .progress.background-primary(style='width: 90%;')
+                                    .progress.background-primary(style='width: 95%;')
                                 h5.float-left.mt-1 Hardware
-                                p.float-right.text-small.text-muted.mt-1 75%
+                                p.float-right.text-small.text-muted.mt-1 85%
                                 .clearfix
                                 .progress-bar
-                                    .progress.background-primary(style='width: 75%;')
+                                    .progress.background-primary(style='width: 85%;')
                                 h5.float-left.mt-1 Document
                                 p.float-right.text-small.text-muted.mt-1 20%
                                 .clearfix

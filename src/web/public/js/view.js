@@ -89,9 +89,9 @@ const setStepClass = (pm_step) => {
     const pm2_5_step = pm_step.pm2_5_step;
     const pm10_0_step = pm_step.pm10_0_step;
 
-    const pm10_0_section = $('.pm_section .card:nth-child(1)');
-    const pm2_5_section = $('.pm_section .card:nth-child(2)');
-    const pm1_0_section = $('.pm_section .card:nth-child(3)');
+    const pm10_0_section = $('.pm_section .column:nth-child(1) .card');
+    const pm2_5_section = $('.pm_section .column:nth-child(2) .card');
+    const pm1_0_section = $('.pm_section .column:nth-child(3) .card');
 
     pm1_0_section.removeClass();
     pm2_5_section.removeClass();
@@ -101,9 +101,13 @@ const setStepClass = (pm_step) => {
     pm2_5_section.addClass('card color-step' + pm2_5_step);
     pm10_0_section.addClass('card color-step' + pm10_0_step);
 
-    pm1_0_section.children('.card-block').children('div').text(convertStepToMsg(pm1_0_step));
-    pm2_5_section.children('.card-block').children('div').text(convertStepToMsg(pm2_5_step));
-    pm10_0_section.children('.card-block').children('div').text(convertStepToMsg(pm10_0_step));
+    pm1_0_section.children('.card-block').children('.step-img').css('background-image','url(https://genie.jupiterflow.com/static/images/svg/step_'+pm1_0_step+'.svg)');
+    pm2_5_section.children('.card-block').children('.step-img').css('background-image','url(https://genie.jupiterflow.com/static/images/svg/step_'+pm2_5_step+'.svg)');
+    pm10_0_section.children('.card-block').children('.step-img').css('background-image','url(https://genie.jupiterflow.com/static/images/svg/step_'+pm10_0_step+'.svg)');
+
+    pm1_0_section.children('.card-block').children('.pm_step').text(convertStepToMsg(pm1_0_step));
+    pm2_5_section.children('.card-block').children('.pm_step').text(convertStepToMsg(pm2_5_step));
+    pm10_0_section.children('.card-block').children('.pm_step').text(convertStepToMsg(pm10_0_step));
 };
 
 const readDeviceData = (callback) => {

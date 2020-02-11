@@ -744,7 +744,17 @@ select:focus {
     background-color: #35cebe;
     border-color: #20ceb7;
 }
-
+.pm_section .column .card {
+    text-align: center;
+}
+.pm_section .column .card .step-img {
+    display: inline-block;
+    background-size: 140px 140px;
+    background-repeat: no-repeat;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 10px;
+}
 .pm_step {
     margin: 0;
     padding: 0;
