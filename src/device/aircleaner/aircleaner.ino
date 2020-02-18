@@ -13,7 +13,7 @@ const char* password = "cf4c9zukj7irr";
 //const char* ssid = "olleh_GiGA_WiFi_BBCC";
 //const char* password = "0000001840 ";
 
-#define PIN 32
+#define PIN 25
 #define NUM_LEDS 8
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 const uint32_t colorStep[8] = {

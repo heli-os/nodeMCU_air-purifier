@@ -241,6 +241,8 @@ const toggleSettingBtn = () => {
 
         $('.setting-form form select[name=modeLED] option').prop('selected', false);
         $('.setting-form form select[name=modeLED] option:eq(' + deviceSetting.modeLED + ')').prop('selected', true);
+        settingBtn.css('border-color', '#333');
+        settingBtn.css('background-color', '#333');
         settingBtn.on('mouseout', () => {
             settingBtn.css('border-color', '#333');
             settingBtn.css('background-color', '#333');
@@ -267,6 +269,8 @@ const toggleSettingBtn = () => {
 
         settingBtn.text('Setting-CLOSE');
     } else {
+        settingBtn.css('border-color', '#35cebe');
+        settingBtn.css('background-color', '#35cebe');
         settingBtn.on('mouseout', () => {
             settingBtn.css('border-color', '#35cebe');
             settingBtn.css('background-color', '#35cebe');
