@@ -20,7 +20,7 @@ const uint32_t colorStep[8] = {
   strip.Color(28, 117, 211), // 최고 좋음
   strip.Color(1, 156, 228),  // 좋음
   strip.Color(0, 173, 196),  // 양호
-  strip.Color(59, 140, 62),  // 보통
+  strip.Color(0, 255, 0),  // 보통
   strip.Color(251, 140, 0),  // 나쁨
   strip.Color(230, 74, 25),  // 상당히 나쁨
   strip.Color(213, 47, 47),  // 매우 나쁨

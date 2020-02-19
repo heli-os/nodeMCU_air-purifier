@@ -58,6 +58,8 @@ router.post('/data/upload', (req, res) => {
 --------------------------------------------------------------
  */
 router.post('/data/download', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     const device = req.body.device;
     mysqlClient.query("SELECT * FROM device_data WHERE device=? ORDER BY time DESC LIMIT 12", device, (err, rows, fields) => {
         // console.log(data);
