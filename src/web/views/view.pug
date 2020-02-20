@@ -6,6 +6,10 @@ html(lang='ko')
         link(href='/static/style/font-awesome.min.css' rel='stylesheet' type='text/css')
         link(href='/static/style/milligram.css' rel='stylesheet' type='text/css')
         link(href='/static/style/view.css' rel='stylesheet' type='text/css')
+        link(href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/railscasts.min.css' rel='stylesheet')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js')
+        script.
+            hljs.initHighlightingOnLoad()
     body
         .navbar
             .row
@@ -34,9 +38,9 @@ html(lang='ko')
                             em.fa.fa-bar-chart
                             |  Charts
                     li
-                        a(href='#widgets')
+                        a(href='#API')
                             em.fa.fa.fa-clone
-                            |  Widgets
+                            |  API
             section#main-content.column.column-offset-20
                 .row.grid-responsive
                     .column.page-heading
@@ -99,37 +103,69 @@ html(lang='ko')
                                 .step-img
                                 .pm_step.pm1_0_step &nbsp;
                 // Widgets
-                h5.mt-2 Widgets
-                a.anchor(name='widgets')
-                .row.grid-responsive.mt-1
+                h5.mt-2 API
+                a.anchor(name='API')
+                .row.grid-responsive.mt-1.api-widget
                     .column
                         .card
                             .card-title
-                                h2.float-left Projects
-                                .badge.float-right 3 In Progress
-                                .badge.background-success.float-right.mr-1 16 Complete
+                                h2.float-left Widgets
                                 .clearfix
-                            .card-block.progress-bars
-                                h5.float-left.mt-1 Web(Node.JS)
-                                p.float-right.text-small.text-muted.mt-1 95%
-                                .clearfix
-                                .progress-bar
-                                    .progress.background-primary(style='width: 95%;')
-                                h5.float-left.mt-1 DataBase
-                                p.float-right.text-small.text-muted.mt-1 95%
-                                .clearfix
-                                .progress-bar
-                                    .progress.background-primary(style='width: 95%;')
-                                h5.float-left.mt-1 Hardware
-                                p.float-right.text-small.text-muted.mt-1 85%
-                                .clearfix
-                                .progress-bar
-                                    .progress.background-primary(style='width: 85%;')
-                                h5.float-left.mt-1 Document
-                                p.float-right.text-small.text-muted.mt-1 20%
-                                .clearfix
-                                .progress-bar
-                                    .progress.background-primary(style='width: 20%;')
+                            .card-block
+                                p Base Url
+                                input(type='text' id='scriptSrc' value='<script src="https://genie.jupiterflow.com/static/pagebanner/pagebanner.js"></script>' readonly=true)
+                                p Usage
+                                pre
+                                    code.javascript
+                                p Parameters
+                                table
+                                    thead
+                                        tr
+                                            td Name
+                                            td Description
+                                    tbody
+                                        tr
+                                            td device
+                                            td 조회할 디바이스의 고유번호
+                                        tr
+                                            td type
+                                            td 조회할 미세먼지 종류 => pm10_0 | pm2_5 | pm1_0
+                                        tr
+                                            td targetSelector
+                                            td jQuery Element Selector => .pm100 | #pm100 | ...
+
+                // Widgets
+                //h5.mt-2 Widgets
+                //a.anchor(name='widgets')
+                //.row.grid-responsive.mt-1
+                //    .column
+                //        .card
+                //            .card-title
+                //                h2.float-left Projects
+                //                .badge.float-right 3 In Progress
+                //                .badge.background-success.float-right.mr-1 16 Complete
+                //                .clearfix
+                //            .card-block.progress-bars
+                //                h5.float-left.mt-1 Web(Node.JS)
+                //                p.float-right.text-small.text-muted.mt-1 95%
+                //                .clearfix
+                //                .progress-bar
+                //                    .progress.background-primary(style='width: 95%;')
+                //                h5.float-left.mt-1 DataBase
+                //                p.float-right.text-small.text-muted.mt-1 95%
+                //                .clearfix
+                //                .progress-bar
+                //                    .progress.background-primary(style='width: 95%;')
+                //                h5.float-left.mt-1 Hardware
+                //                p.float-right.text-small.text-muted.mt-1 85%
+                //                .clearfix
+                //                .progress-bar
+                //                    .progress.background-primary(style='width: 85%;')
+                //                h5.float-left.mt-1 Document
+                //                p.float-right.text-small.text-muted.mt-1 20%
+                //                .clearfix
+                //                .progress-bar
+                //                    .progress.background-primary(style='width: 20%;')
 
                 p.credit
                     | Smart Air Cleaner CMS - GENIE by&nbsp;

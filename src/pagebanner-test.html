@@ -6,25 +6,35 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="https://genie.jupiterflow.com/static/js/pagebanner/pagebanner.js"></script>
+    <script src="https://genie.jupiterflow.com/static/pagebanner/pagebanner.js"></script>
     <script>
         pagebanner({
             device: 'LoRaHam-98AE',
             type: 'pm10_0',
-            targetSelector: 'body'
+            targetSelector: '#pm100'
         });
         pagebanner({
             device: 'LoRaHam-98AE',
             type: 'pm2_5',
-            targetSelector: 'body'
+            targetSelector: '#pm250'
         });
         pagebanner({
             device: 'LoRaHam-98AE',
             type: 'pm1_0',
-            targetSelector: 'body'
+            targetSelector: '#pm10'
         });
     </script>
+    <style>
+        #pm100,#pm250,#pm10 {
+            width: 300px;
+            height: 300px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
+<span id="pm100"></span>
+<span id="pm250"></span>
+<span id="pm10"></span>
 </body>
 </html>

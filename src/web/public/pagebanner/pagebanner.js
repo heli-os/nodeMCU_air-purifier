@@ -1,5 +1,5 @@
 let $;
-const convertStepToMsg = (step) => {
+const pageBanner_convertStepToMsg = (step) => {
     let msg = '';
     switch (step) {
         case 0:
@@ -29,7 +29,7 @@ const convertStepToMsg = (step) => {
     }
     return msg;
 };
-const stepToColor = (step) => {
+const pageBanner_stepToColor = (step) => {
     let msg = {backgroundColor: ''};
     switch (step) {
         case 0:
@@ -67,7 +67,7 @@ const pagebanner = ({device, type, targetSelector}) => {
         script_tag.setAttribute("src",
             "https://genie.jupiterflow.com/static/vendor/jquery/jquery-3.4.1.min.js");
         if (script_tag.readyState) {
-            script_tag.onreadystatechange = function () { // For old versions of IE
+            script_tag.onreadystatechange = () => { // For old versions of IE
                 if (this.readyState == 'complete' || this.readyState == 'loaded') {
                     scriptLoadHandler(device, type, targetSelector);
                 }
@@ -87,16 +87,16 @@ const pagebanner = ({device, type, targetSelector}) => {
 };
 
 const scriptLoadHandler = (device, type, targetSelector) => {
-    $ = window.jQuery.noConflict(true);
+    $ = window.$.noConflict(true);
     main(device, type, targetSelector);
-}
+};
 
 const main = (device, type, targetSelector) => {
     $.ajax({
         type: 'post',
         url: 'https://genie.jupiterflow.com/device/data/download',
         data: {device: device},
-        // dataType: 'json'
+        dataType: 'json'
     }).done((result) => {
         const record = result.data;
 
@@ -109,8 +109,12 @@ const main = (device, type, targetSelector) => {
             color: 'white',
             background: '#fff',
             boxShadow: '0px 0px 25px rgba(0, 0, 0, 0.05)',
-            width: '251px',
-            height: '251px'
+            // width: '251px',
+            // height: '251px'
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            // paddingBottom: '25%'
         };
         const cardTitleCSS = {
             borderBottom: '1px solid #eee',
@@ -129,10 +133,10 @@ const main = (device, type, targetSelector) => {
         };
         const pmStepImgCSS = {
             display: 'inline-block',
-            backgroundSize: '140px 140px',
+            backgroundSize: '100% 100%',
             backgroundRepeat: 'no-repeat',
-            width: '140px',
-            height: '140px',
+            width: '55%',
+            paddingBottom: '65%',
             marginBottom: '10px'
         };
 
@@ -147,35 +151,34 @@ const main = (device, type, targetSelector) => {
         switch (type) {
             case 'pm10_0':
                 const pm10_0_section = $(document.createElement('div'));
-                pm10_0_section.css(Object.assign({}, cardCSS, {display: 'inline-block'}, stepToColor(pm10_0_step)));
+                pm10_0_section.css(Object.assign({}, cardCSS, {display: 'inline-block'}, pageBanner_stepToColor(pm10_0_step)));
                 pm10_0_section.append(cardTitle);
                 pm10_0_section.children('div:nth-child(1)').children('div').html('미세먼지');
                 pm10_0_section.append(cardBlock);
                 pm10_0_section.children('div:nth-child(2)').children('div:nth-child(1)').css({backgroundImage: 'url(https://genie.jupiterflow.com/static/images/svg/step_' + pm10_0_step + '.svg)'});
-                pm10_0_section.children('div:nth-child(2)').children('div:nth-child(2)').html(convertStepToMsg(pm10_0_step));
-                $(targetSelector).append(pm10_0_section);
+                pm10_0_section.children('div:nth-child(2)').children('div:nth-child(2)').html(pageBanner_convertStepToMsg(pm10_0_step));
+                $(targetSelector).html(pm10_0_section);
                 break;
             case 'pm2_5':
                 const pm2_5_section = $(document.createElement('div'));
-                pm2_5_section.css(Object.assign({}, cardCSS, {display: 'inline-block'}, stepToColor(pm2_5_step)));
+                pm2_5_section.css(Object.assign({}, cardCSS, {display: 'inline-block'}, pageBanner_stepToColor(pm2_5_step)));
                 pm2_5_section.append(cardTitle);
                 pm2_5_section.children('div:nth-child(1)').children('div').html('초미세먼지');
                 pm2_5_section.append(cardBlock);
                 pm2_5_section.children('div:nth-child(2)').children('div:nth-child(1)').css({backgroundImage: 'url(https://genie.jupiterflow.com/static/images/svg/step_' + pm2_5_step + '.svg)'});
-                pm2_5_section.children('div:nth-child(2)').children('div:nth-child(2)').html(convertStepToMsg(pm2_5_step));
-                $(targetSelector).append(pm2_5_section);
+                pm2_5_section.children('div:nth-child(2)').children('div:nth-child(2)').html(pageBanner_convertStepToMsg(pm2_5_step));
+                $(targetSelector).html(pm2_5_section);
                 break;
             case 'pm1_0':
                 const pm1_0_section = $(document.createElement('div'));
-                pm1_0_section.css(Object.assign({}, cardCSS, {display: 'inline-block'}, stepToColor(pm1_0_step)));
+                pm1_0_section.css(Object.assign({}, cardCSS, {display: 'inline-block'}, pageBanner_stepToColor(pm1_0_step)));
                 pm1_0_section.append(cardTitle);
                 pm1_0_section.children('div:nth-child(1)').children('div').html('극미세먼지');
                 pm1_0_section.append(cardBlock);
                 pm1_0_section.children('div:nth-child(2)').children('div:nth-child(1)').css({backgroundImage: 'url(https://genie.jupiterflow.com/static/images/svg/step_' + pm1_0_step + '.svg)'});
-                pm1_0_section.children('div:nth-child(2)').children('div:nth-child(2)').html(convertStepToMsg(pm1_0_step));
-                $(targetSelector).append(pm1_0_section);
+                pm1_0_section.children('div:nth-child(2)').children('div:nth-child(2)').html(pageBanner_convertStepToMsg(pm1_0_step));
+                $(targetSelector).html(pm1_0_section);
                 break;
-        }
-        ;
+        };
     });
 };

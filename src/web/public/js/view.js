@@ -101,9 +101,9 @@ const setStepClass = (pm_step) => {
     pm2_5_section.addClass('card color-step' + pm2_5_step);
     pm10_0_section.addClass('card color-step' + pm10_0_step);
 
-    pm1_0_section.children('.card-block').children('.step-img').css('background-image','url(https://genie.jupiterflow.com/static/images/svg/step_'+pm1_0_step+'.svg)');
-    pm2_5_section.children('.card-block').children('.step-img').css('background-image','url(https://genie.jupiterflow.com/static/images/svg/step_'+pm2_5_step+'.svg)');
-    pm10_0_section.children('.card-block').children('.step-img').css('background-image','url(https://genie.jupiterflow.com/static/images/svg/step_'+pm10_0_step+'.svg)');
+    pm1_0_section.children('.card-block').children('.step-img').css('background-image', 'url(https://genie.jupiterflow.com/static/images/svg/step_' + pm1_0_step + '.svg)');
+    pm2_5_section.children('.card-block').children('.step-img').css('background-image', 'url(https://genie.jupiterflow.com/static/images/svg/step_' + pm2_5_step + '.svg)');
+    pm10_0_section.children('.card-block').children('.step-img').css('background-image', 'url(https://genie.jupiterflow.com/static/images/svg/step_' + pm10_0_step + '.svg)');
 
     pm1_0_section.children('.card-block').children('.pm_step').text(convertStepToMsg(pm1_0_step));
     pm2_5_section.children('.card-block').children('.pm_step').text(convertStepToMsg(pm2_5_step));
@@ -306,6 +306,21 @@ const saveSetting = (formData) => {
         }
     });
 };
+
+const initApiWidget = () => {
+    const deviceID = getDeviceID();
+    if (!deviceID) {
+        console.log('exit');
+        return;
+    }
+    const apiwidgetCode = $('.api-widget code.javascript');
+    apiwidgetCode.html(`pagebanner({
+    device: '${deviceID}',
+    type: 'pm10_0',
+    targetSelector: '#pm100'
+});
+`);
+};
 $(window).on('load', () => {
     ctx = $('#myChart');
     readDeviceData();
@@ -332,5 +347,10 @@ $(window).on('load', () => {
     $('.setting-form span.button.settingSave').on('click', () => {
         const formData = $('.setting-form form').serialize();
         saveSetting(formData);
+    });
+
+    initApiWidget();
+    document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
     });
 });

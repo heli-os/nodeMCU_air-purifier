@@ -803,3 +803,58 @@ select:focus {
     background-color: rgb(33, 33, 33);
     color: white;
 }
+
+.api-widget p {
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-weight: 700;
+    width: 20rem;
+    font-size: 20px;
+}
+
+.api-widget input[type=text] {
+    max-width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-family: Montserrat;
+    padding: 0 20px 0 20px;
+    outline: none;
+    background-color: rgb(245, 245, 245);
+}
+
+.api-widget #scriptSrc {
+    width: 100%;
+}
+
+.api-widget pre {
+    margin: 0;
+}
+.api-widget pre code {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.api-widget table {
+    font-family: Montserrat;
+}
+
+.api-widget thead {
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.api-widget table tr td:nth-child(1) {
+    width: 20%;
+}
+.api-widget tbody tr td:nth-child(1) {
+     font-weight: 700;
+     font-size: 16px;
+ }
+
+.api-widget tbody tr td:nth-child(2) {
+    font-size: 14px;
+}
