@@ -30,7 +30,7 @@
     <img src="https://github.com/960813/NodeMCU_air-purifier/blob/master/_data/README.png?raw=true" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">\[제 1회 YNC 메이커톤\] 미세먼지 감지와 공기청정 기능을 가진 무드등 및 CMS</h3>
+  <h3 align="center">[제 1회 YNC 메이커톤] 미세먼지 감지와 공기청정 기능을 가진 무드등 및 CMS</h3>
 
   <p align="center">
     아두이노(NodeMCU)를 이용한 미세먼지 감지 및 공기 청정 프로젝트 아두이노/웹 소스 코드
