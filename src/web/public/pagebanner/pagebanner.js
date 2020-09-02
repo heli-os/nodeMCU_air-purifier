@@ -1,4 +1,4 @@
-let $;
+let $jquery_variable;
 const pageBanner_convertStepToMsg = (step) => {
     let msg = '';
     switch (step) {
@@ -81,18 +81,18 @@ const pagebanner = ({device, type, targetSelector}) => {
         (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
     } else {
         // The jQuery version on the window is the one we want to use
-        $ = window.$;
+        $jquery_variable = window.$;
         main(device, type, targetSelector);
     }
 };
 
 const scriptLoadHandler = (device, type, targetSelector) => {
-    $ = window.$.noConflict(true);
+    $jquery_variable = window.$.noConflict(true);
     main(device, type, targetSelector);
 };
 
 const main = (device, type, targetSelector) => {
-    $.ajax({
+    $jquery_variable.ajax({
         type: 'post',
         url: 'https://genie.jupiterflow.com/device/data/download',
         data: {device: device},

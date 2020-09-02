@@ -38,6 +38,10 @@ html(lang='ko')
                             em.fa.fa-bar-chart
                             |  Charts
                     li
+                        a(href='#prediction')
+                            em.fa.fa-flask
+                            | Prediction
+                    li
                         a(href='#API')
                             em.fa.fa.fa-clone
                             |  API
@@ -102,6 +106,31 @@ html(lang='ko')
                             .card-block
                                 .step-img
                                 .pm_step.pm1_0_step &nbsp;
+                // 예측 Model 적용
+                h5.mt-2 Prediction
+                a.anchor(name='prediction')
+                .row.grid-responsive.mt-1
+                    .column
+                        .card
+                            .card-title
+                                h2.float-left Prediction
+                                .clearfix
+                            .card-block
+                                .row
+                                    .column
+                                        label 에어컨 작동 유무
+                                        select(id='air_conditioner')
+                                            option(value='1') 작동 중
+                                            option(value='0') 작동 안함
+                                    .column
+                                        label 1m 내 인원 수
+                                        input(type='number' id='here_people' value='5')
+                                    .column
+                                        label 공간 내 전체 인원 수
+                                        input(type='number' id='all_people' value='30')
+                                .row
+                                    span.button.predictionBtn 예측
+                                #prediction_data
                 // Widgets
                 h5.mt-2 API
                 a.anchor(name='API')

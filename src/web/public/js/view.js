@@ -321,6 +321,20 @@ const initApiWidget = () => {
 });
 `);
 };
+
+function getTimeStamp() {
+    var d = new Date();
+    var s =
+        leadingZeros(d.getFullYear(), 4) + '-' +
+        leadingZeros(d.getMonth() + 1, 2) + '-' +
+        leadingZeros(d.getDate(), 2) + ' ' +
+
+        leadingZeros(d.getHours(), 2) + ':' +
+        leadingZeros(d.getMinutes(), 2) + ':' +
+        leadingZeros(d.getSeconds(), 2);
+
+    return s;
+}
 $(window).on('load', () => {
     ctx = $('#myChart');
     readDeviceData();
@@ -347,6 +361,37 @@ $(window).on('load', () => {
     $('.setting-form span.button.settingSave').on('click', () => {
         const formData = $('.setting-form form').serialize();
         saveSetting(formData);
+    });
+
+    $('.predictionBtn').on('click', () => {
+        $.ajax({
+            type: 'post',
+            url: '/prediction/api',
+            data: {
+                air_conditioner: $('#air_conditioner').val(),
+                here_people: $('#here_people').val(),
+                all_people: $('#all_people').val(),
+            },
+            dataType: 'json'
+        }).done((result) => {
+            $('#prediction_data').html(`
+<p class="mt-1 mb-1">현재(${getTimeStamp()})로부터 약 30초 뒤, 미세먼지 예측 입니다.</p>
+<table>
+    <tr>
+        <td><b>미세먼지</b></td>
+        <td>${result[0][0]}</td>
+    </tr>
+    <tr>
+        <td><b>초미세먼지</b></td>
+        <td>${result[0][1]}</td>
+    </tr>
+    <tr>
+        <td><b>극미세먼지</b></td>
+        <td>${result[0][2]}</td>
+    </tr>
+</table>
+            `);
+        });
     });
 
     initApiWidget();

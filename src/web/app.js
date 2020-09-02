@@ -12,7 +12,8 @@ const indexRouter = require('./routes/index');
 const authenticationRouter = require('./routes/authentication');
 const viewRouter = require('./routes/view');
 const deviceRouter = require('./routes/device');
-const kakaoReouter = require('./routes/kakao-skill');
+const kakaoRouter = require('./routes/kakao-skill');
+const predictionRouter = require('./routes/prediction');
 
 // Passport
 const passport = require('passport');
@@ -81,4 +82,5 @@ app.use('/', indexRouter);
 app.use('/authentication', authenticationRouter);
 app.use('/view', viewRouter);
 app.use('/device', deviceRouter);
-app.use('/kakao',kakaoReouter);
+app.use('/kakao',kakaoRouter);
+app.use('/prediction', predictionRouter);
