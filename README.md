@@ -38,7 +38,7 @@
     <a href="https://github.com/960813/NodeMCU_air-purifier"><strong>Explore the Github »</strong></a>
     <br />
     <br />
-    <a href="https://jupiterflow.com/project/2">View Snapshots</a>
+    <a href="https://jupiterflow.com/project/4">View Snapshots</a>
     ·
     <a href="https://github.com/960813/NodeMCU_air-purifier/issues">Report Bug</a>
     ·
